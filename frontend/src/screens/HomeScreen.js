@@ -1,4 +1,4 @@
-import data from '../data'
+import data from '../../../backend/data'
 import Product from '../components/Product'
 
 
