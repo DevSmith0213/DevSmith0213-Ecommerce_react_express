@@ -1,6 +1,7 @@
 import React from 'react';
-import { useSelector } from 'react-redux';
-import {BrowserRouter, Link, Route} from 'react-router-dom'
+import { useDispatch, useSelector } from 'react-redux';
+import { BrowserRouter, Link, Route } from 'react-router-dom'
+import { signout } from './actions.js/userActions';
 import Cartscreen from './screens/CartScreen';
 import Homescreen from './screens/HomeScreen';
 import Productscreen from './screens/ProductScreen';
@@ -9,7 +10,13 @@ import Signinscreen from './screens/SigninScreen';
 function App() {
 
     const cart = useSelector((state) => state.cart);
-    const {cartItems} = cart;
+    const { cartItems } = cart;
+    const userSignin = useSelector((state) => (state.userSignin));
+    const { userInfo } = userSignin;
+    const dispatch = useDispatch();
+    const signoutHandler = () => {
+        dispatch(signout());
+    }
 
     return (
         <BrowserRouter>
@@ -25,19 +32,33 @@ function App() {
                                 <span className="badge">{cartItems.length}</span>
                             )}
                         </Link>
-                        <Link to="/signin">Sign in</Link>
+                        {
+                            userInfo ? (
+                                <div className="dropdown">
+                                    <Link to="#">
+                                        {userInfo.name} <i className="fa fa-caret-down"></i>{' '}
+                                    </Link>
+                                    <ul className="dropdown-content">
+                                        <Link to="#signout" onClick={signoutHandler}>Sign Out</Link>
+                                    </ul>
+                                </div>
+                            ) : (
+                                    <Link to="/signin">Sign in</Link>
+                                )
+                        }
+
                     </div>
                 </header>
                 <main>
                     <Route path="/cart/:id?" component={Cartscreen}></Route>
                     <Route path="/product/:id" component={Productscreen}></Route>
-                    <Route path='/signin' component = {Signinscreen}></Route>
+                    <Route path='/signin' component={Signinscreen}></Route>
                     <Route path="/" component={Homescreen} exact></Route>
                 </main>
                 <footer className="row center">All right reserved</footer>
             </div>
         </BrowserRouter>
-        
+
     );
 }
 
